@@ -1,7 +1,33 @@
+<template>
+  <div>
+    <h1>{{ title }}</h1>
+    <ErrorMessage v-if="error" :message="error" />
+
+    <Todolist
+      :todos="firstTenTodo"
+      @toggleState="toggleState"
+      @deleteItem="deleteItem"
+    />
+
+    <AddItem @addItem="addItem" />
+    <SortButton @sortData="sortData" :isSorted="isSorted" />
+  </div>
+</template>
+
 <script>
 import { defineComponent } from "vue";
+import Todolist from "./components/Todolist.vue";
+import AddItem from "./components/AddItem.vue";
+import ErrorMessage from "./components/ErrorMessage.vue";
+import SortButton from "./components/SortButton.vue";
 
 export default defineComponent({
+  components: {
+    Todolist,
+    AddItem,
+    ErrorMessage,
+    SortButton,
+  },
   data() {
     return {
       title: "Todolist",
@@ -35,30 +61,32 @@ export default defineComponent({
     toggleState(todo) {
       todo.completed = !todo.completed;
     },
-    addItem() {
-      if (/\d/.test(this.newEntry)) {
+    addItem(newEntry) {
+      if (/\d/.test(newEntry)) {
         alert("We cannot add this task, because it contains a number");
-      } else if (this.newEntry === "") {
+      } else if (newEntry === "") {
         alert("We cannot add this task, because it is void");
       } else {
         this.firstTenTodo.push({
           userId: 1,
           id: this.firstTenTodo.length + 1,
-          title: this.newEntry,
+          title: newEntry,
           completed: false,
         });
-        this.newEntry = "";
       }
     },
     deleteItem(id) {
-      // Supprime l'élément correspondant dans la liste des tâches
       this.firstTenTodo.splice(id, 1);
     },
     sortData() {
-      this.isSorted = true;
-      this.firstTenTodo = [...this.firstTenTodo].sort(
-        (a, b) => b.completed - a.completed
-      );
+      this.isSorted = !this.isSorted;
+      if (this.isSorted) {
+        this.firstTenTodo = [...this.firstTenTodo].sort(
+          (a, b) => b.completed - a.completed
+        );
+      } else {
+        this.firstTenTodo = [...this.firstTenTodo].sort((a, b) => a.id - b.id);
+      }
     },
   },
   mounted() {
@@ -67,60 +95,10 @@ export default defineComponent({
 });
 </script>
 
-<template>
-  <h1>{{ title }}</h1>
-  <ul class="todolist">
-    <div v-if="error" class="error-message">
-      <p>{{ error }}</p>
-    </div>
-    <li
-      :class="{ completed: todo.completed }"
-      :key="todo.index"
-      v-for="(todo, id) in firstTenTodo"
-      class="todo"
-    >
-      {{ todo.id }} - {{ todo.title }}
-
-      <button v-if="todo.completed" class="btn" @click="toggleState(todo)">
-        Done
-      </button>
-      <button v-else class="btn" @click="toggleState(todo)">To Do</button>
-      <button class="btn" @click="deleteItem(id)">X</button>
-
-      <img
-        v-if="todo.completed === true"
-        src="./assets/done.png"
-        width="15px"
-        srcset=""
-      />
-    </li>
-  </ul>
-  <input v-model="newEntry" type="text" name="" id="" />
-  <button @click="addItem">Add</button>
-  <button @click="sortData">Sort by Done</button>
-</template>
-
 <style scoped>
 h1 {
   color: #111;
-}
-
-li {
-  color: red;
-  list-style: none;
-}
-
-.completed {
-  color: green;
-}
-
-.btn {
-  padding: 3px;
-  margin-right: 3px;
-}
-
-.error-message {
-  color: red;
-  font-weight: bold;
+  text-align: center;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 </style>
