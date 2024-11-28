@@ -1,5 +1,5 @@
 <template>
-  <button @click="sortData">
+  <button class="btn btn-sort" @click="sortData">
     {{ isSorted ? "Revert Sort" : "Sort by Done" }}
   </button>
 </template>
@@ -16,3 +16,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.btn-sort {
+  text-align: center;
+}
+</style>

@@ -2,6 +2,7 @@
   <div>
     <h1>{{ title }}</h1>
     <ErrorMessage v-if="error" :message="error" />
+    <SortButton @sortData="sortData" :isSorted="isSorted" />
 
     <Todolist
       :todos="firstTenTodo"
@@ -10,7 +11,6 @@
     />
 
     <AddItem @addItem="addItem" />
-    <SortButton @sortData="sortData" :isSorted="isSorted" />
   </div>
 </template>
 
@@ -95,10 +95,23 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style>
 h1 {
   color: #111;
   text-align: center;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+body {
+  font-family: "Trebuchet MS", sans-serif;
+}
+
+.btn {
+  background-color: #fff;
+  border: 1px solid #d5d9d9;
+  box-sizing: border-box;
+  color: #0f1111;
+  padding: 4px;
+  color: white;
+  background-color: #111;
 }
 </style>

@@ -32,3 +32,10 @@ export default defineComponent({
   },
 });
 </script>
+<style scoped>
+.todolist {
+  background-color: #111;
+  padding: 10px 10px;
+  border-radius: 10px;
+}
+</style>
