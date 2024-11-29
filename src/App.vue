@@ -1,97 +1,85 @@
 <template>
-  <div>
-    <h1>{{ title }}</h1>
-    <ErrorMessage v-if="error" :message="error" />
-    <SortButton @sortData="sortData" :isSorted="isSorted" />
+  <h1>{{ title }}</h1>
+  <ErrorMessage v-if="error" :message="error" />
+  <SortButton @sortData="sortData" :isSorted="isSorted" />
 
-    <Todolist
-      :todos="firstTenTodo"
-      @toggleState="toggleState"
-      @deleteItem="deleteItem"
-    />
+  <Todolist
+    :todos="firstTenTodo"
+    @toggleState="toggleState"
+    @deleteItem="deleteItem"
+  />
 
-    <AddItem @addItem="addItem" />
-  </div>
+  <AddItem @addItem="addItem" />
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { ref, onMounted } from "vue";
 import Todolist from "./components/Todolist.vue";
 import AddItem from "./components/AddItem.vue";
 import ErrorMessage from "./components/ErrorMessage.vue";
 import SortButton from "./components/SortButton.vue";
 
-export default defineComponent({
-  components: {
-    Todolist,
-    AddItem,
-    ErrorMessage,
-    SortButton,
-  },
-  data() {
-    return {
-      title: "Todolist",
-      newEntry: "",
-      todolist: [],
-      firstTenTodo: [],
-      isSorted: false,
-      error: null,
-    };
-  },
-  methods: {
-    async getTodolist() {
-      this.todolist = null;
-      this.firstTenTodo = null;
-      this.error = null;
+const title = ref("Todolist");
+const newEntry = ref("");
+const todolist = ref([]);
+const firstTenTodo = ref([]);
+const isSorted = ref(false);
+const error = ref(null);
 
-      try {
-        const response = await fetch(
-          "https://jsonplaceholder.typicode.com/todos"
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP Error Status : ${response.status}`);
-        }
-        const result = await response.json();
-        this.todolist = result;
-        this.firstTenTodo = result.slice(0, 10);
-      } catch (err) {
-        this.error = `An error occurred while retrieving data : ${err.message}. Please try again.`;
-      }
-    },
-    toggleState(todo) {
-      todo.completed = !todo.completed;
-    },
-    addItem(newEntry) {
-      if (/\d/.test(newEntry)) {
-        alert("We cannot add this task, because it contains a number");
-      } else if (newEntry === "") {
-        alert("We cannot add this task, because it is void");
-      } else {
-        this.firstTenTodo.push({
-          userId: 1,
-          id: this.firstTenTodo.length + 1,
-          title: newEntry,
-          completed: false,
-        });
-      }
-    },
-    deleteItem(id) {
-      this.firstTenTodo.splice(id, 1);
-    },
-    sortData() {
-      this.isSorted = !this.isSorted;
-      if (this.isSorted) {
-        this.firstTenTodo = [...this.firstTenTodo].sort(
-          (a, b) => b.completed - a.completed
-        );
-      } else {
-        this.firstTenTodo = [...this.firstTenTodo].sort((a, b) => a.id - b.id);
-      }
-    },
-  },
-  mounted() {
-    this.getTodolist();
-  },
+const getTodolist = async () => {
+  todolist.value = null;
+  firstTenTodo.value = null;
+  error.value = null;
+
+  try {
+    const response = await fetch("https://jsonplaceholder.typicode.com/todos");
+    if (!response.ok) {
+      throw new Error(`HTTP Error Status : ${response.status}`);
+    }
+    const result = await response.json();
+    todolist.value = result;
+    firstTenTodo.value = result.slice(0, 10);
+  } catch (err) {
+    error.value = `An error occurred while retrieving data : ${err.message}. Please try again.`;
+  }
+};
+
+const toggleState = (todo) => {
+  todo.completed = !todo.completed;
+};
+
+const addItem = (newEntryValue) => {
+  if (/\d/.test(newEntryValue)) {
+    alert("We cannot add this task, because it contains a number");
+  } else if (newEntryValue === "") {
+    alert("We cannot add this task, because it is void");
+  } else {
+    firstTenTodo.value.push({
+      userId: 1,
+      id: firstTenTodo.value.length + 1,
+      title: newEntryValue,
+      completed: false,
+    });
+  }
+};
+
+const deleteItem = (id) => {
+  firstTenTodo.value.splice(id, 1);
+};
+
+const sortData = () => {
+  isSorted.value = !isSorted.value;
+  if (isSorted.value) {
+    firstTenTodo.value = [...firstTenTodo.value].sort(
+      (a, b) => b.completed - a.completed
+    );
+  } else {
+    firstTenTodo.value = [...firstTenTodo.value].sort((a, b) => a.id - b.id);
+  }
+};
+
+onMounted(() => {
+  getTodolist();
 });
 </script>
 

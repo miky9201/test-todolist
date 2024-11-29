@@ -1,6 +1,6 @@
 <template>
   <li :class="{ completed: todo.completed }" class="todo">
-    {{ todo.id }} - {{ todo.title }}
+    {{ id + 1 }} - {{ todo.title }}
 
     <button
       v-if="todo.completed"
@@ -18,22 +18,23 @@
   </li>
 </template>
 
-<script>
-export default {
-  props: {
-    todo: Object,
-    id: Number,
-  },
-  methods: {
-    toggleState(todo) {
-      this.$emit("toggleState", todo);
-    },
-    deleteItem(id) {
-      this.$emit("deleteItem", id);
-    },
-  },
+<script setup>
+const props = defineProps({
+  todo: Object,
+  id: Number,
+});
+
+const emit = defineEmits(["toggleState", "deleteItem"]);
+
+const toggleState = (todo) => {
+  emit("toggleState", todo);
+};
+
+const deleteItem = (id) => {
+  emit("deleteItem", id);
 };
 </script>
+
 <style scoped>
 li {
   color: rgb(235, 0, 125);
@@ -47,9 +48,12 @@ li {
   color: #fff;
   background-color: unset;
 }
-.btn-done:hover,
+.btn-done:hover {
+  border: 1px solid rgb(235, 0, 125);
+}
+
 .btn-todo:hover {
-  border: 3px solid rgb(224, 224, 224);
+  border: 1px solid rgb(45, 206, 120);
 }
 
 .btn-delete {

@@ -10,21 +10,19 @@
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      newEntry: "",
-    };
-  },
-  methods: {
-    addItem() {
-      this.$emit("addItem", this.newEntry);
-      this.newEntry = "";
-    },
-  },
+<script setup>
+import { ref } from "vue";
+
+const newEntry = ref("");
+
+const emit = defineEmits(["addItem"]);
+
+const addItem = () => {
+  emit("addItem", newEntry.value);
+  newEntry.value = "";
 };
 </script>
+
 <style scoped>
 .input-container {
   display: flex;

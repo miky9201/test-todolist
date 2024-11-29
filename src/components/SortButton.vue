@@ -4,18 +4,18 @@
   </button>
 </template>
 
-<script>
-export default {
-  props: {
-    isSorted: Boolean,
-  },
-  methods: {
-    sortData() {
-      this.$emit("sortData");
-    },
-  },
+<script setup>
+const props = defineProps({
+  isSorted: Boolean,
+});
+
+const emit = defineEmits(["sortData"]);
+
+const sortData = () => {
+  emit("sortData");
 };
 </script>
+
 <style scoped>
 .btn-sort {
   text-align: center;

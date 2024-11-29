@@ -11,27 +11,24 @@
   </ul>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import TodoItem from "./TodoItem.vue";
 
-export default defineComponent({
-  components: {
-    TodoItem,
-  },
-  props: {
-    todos: Array,
-  },
-  methods: {
-    toggleState(todo) {
-      this.$emit("toggleState", todo);
-    },
-    deleteItem(id) {
-      this.$emit("deleteItem", id);
-    },
-  },
+const props = defineProps({
+  todos: Array,
 });
+
+const emit = defineEmits(["toggleState", "deleteItem"]);
+
+const toggleState = (todo) => {
+  emit("toggleState", todo);
+};
+
+const deleteItem = (id) => {
+  emit("deleteItem", id);
+};
 </script>
+
 <style scoped>
 .todolist {
   background-color: #111;
